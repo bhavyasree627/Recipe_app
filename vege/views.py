@@ -101,7 +101,7 @@ def register_page(request):
     
     return render(request,"register.html")
 
-from django.db.models import Q
+from django.db.models import Q,Sum
 def get_students(request):
     queryset=Student.objects.all()
     if request.GET.get('search'):
@@ -117,3 +117,8 @@ def get_students(request):
     page_number = request.GET.get("page",1)
     page_obj = paginator.get_page(page_number)
     return render(request,'reports\students.html',{'queryset':page_obj})
+
+def see_marks(request,student_id):
+    queryset=SubjectMarks.objects.filter(student__student_id__student_id=student_id)
+    total_marks=queryset.aggregate(total_marks=Sum('marks'))
+    return render(request,'reports\see_marks.html',{'queryset':queryset,'total_marks':total_marks})

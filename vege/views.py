@@ -101,9 +101,12 @@ def register_page(request):
     
     return render(request,"register.html")
 
-from django.db.models import Q,Sum
+from django.db.models import Q,Sum,Window
 def get_students(request):
     queryset=Student.objects.all()
+
+    ranks=Student.objects.annotate(marks=Sum("studentmarks__marks")).order_by('marks','-student_age'),
+    
     if request.GET.get('search'):
         search=request.GET.get('search')
         queryset=queryset.filter(
@@ -121,4 +124,15 @@ def get_students(request):
 def see_marks(request,student_id):
     queryset=SubjectMarks.objects.filter(student__student_id__student_id=student_id)
     total_marks=queryset.aggregate(total_marks=Sum('marks'))
+    ranks=Student.objects.annotate(marks=Sum("studentmarks__marks")).order_by('marks','-student_age')
     return render(request,'reports\see_marks.html',{'queryset':queryset,'total_marks':total_marks})
+
+# def generate_report_card():
+#     current_rank=-1
+#     ranks=Student.objects.annotate(marks=Sum('studentmarks__marks')).order_by('-marks','-student_age')
+#     i=1
+#     for rank in ranks:
+#         ReportCard.objects.create(
+#             student=rank,student_rank=i
+#         )
+#         i+=1

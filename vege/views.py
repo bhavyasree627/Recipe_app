@@ -5,6 +5,15 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from vege.utils import send_email_to_client
+
+def send_mail(request):
+    send_email_to_client()
+    return redirect('/')
+
+def home(request):
+    return render(request,'home.html')
+
 
 @login_required(login_url="/login/")
 def receipes(request):

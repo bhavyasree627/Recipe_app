@@ -5,10 +5,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from vege.utils import send_email_to_client
-
-def send_mail(request):
-    send_email_to_client()
+from .utils import send_email_to_client,send_email_with_attachment
+from django.conf import settings
+def send_email(request):
+    subject="This message is from Django server and has an attachment"
+    message="Hey please look the attachment"
+    recipient_list=["bhogathibhavya99@gmail.com"]
+    file_path = f"{settings.BASE_DIR}/manage.py"
+    send_email_with_attachment(subject,message,recipient_list,file_path) 
     return redirect('/')
 
 def home(request):
